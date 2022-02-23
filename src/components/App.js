@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CircularProgress from '@mui/material/CircularProgress';
 import ChannelList from './ChannelList';
 import Channel from './Channel';
 
@@ -33,7 +32,7 @@ class App extends React.Component {
     const { user, isLoading, channelSelected } = this.state;
 
     return isLoading ? (
-      <CircularProgress />
+      <h1>Loading</h1>
     ) : (
       <>
         <ChannelList

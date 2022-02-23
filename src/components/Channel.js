@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CircularProgress from '@mui/material/CircularProgress';
 import MessageCard from './MessageCard';
 import MessageInput from './MessageInput';
 
@@ -42,7 +41,7 @@ class Channel extends React.Component {
     const { isLoading, channelMessages } = this.state;
 
     return isLoading && channelMessages.length === 0 ? (
-      <CircularProgress />
+      <h1>Loading</h1>
     ) : (
       <>
         <h1>{channel.name}</h1>
@@ -60,6 +59,7 @@ class Channel extends React.Component {
               key={message.id}
               record={messageObj}
               userId={userId}
+              channelId={channel.id}
               getMessages={this.getMessages}
             />
           );

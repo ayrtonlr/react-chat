@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
 
 export const createMessage = (userId, channelId, content = '', nextAction = null) => {
   fetch('http://localhost:3004/messages/', {
@@ -52,19 +51,19 @@ class ChannelCard extends React.Component {
       <div>
         <p>{record.name}</p>
         {!noAdd ? (
-          <Button
-            variant="contained"
+          <button
+            type="button"
             onClick={() => this.handleClick(record)}
           >
             Add
-          </Button>
+          </button>
         ) : (
-          <Button
-            variant="contained"
+          <button
+            type="button"
             onClick={() => setChannelSelected(record)}
           >
             Select
-          </Button>
+          </button>
         )}
       </div>
     );
