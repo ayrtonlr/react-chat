@@ -47,7 +47,7 @@ class Channel extends React.Component {
       <>
         <h1>{channel.name}</h1>
         {channelMessages.map((message) => {
-          const newMessage = {
+          const messageObj = {
             id: message.id,
             content: message.content,
             createdAt: message.createdAt,
@@ -58,8 +58,9 @@ class Channel extends React.Component {
           return (
             <MessageCard
               key={message.id}
-              record={newMessage}
+              record={messageObj}
               userId={userId}
+              getMessages={this.getMessages}
             />
           );
         })}
