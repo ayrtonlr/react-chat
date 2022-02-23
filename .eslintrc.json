@@ -19,6 +19,9 @@
     ],
     "rules": {
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-      "react/react-in-jsx-scope": "off"
+      "react/react-in-jsx-scope": "off",
+      "react/prefer-stateless-function": "off",
+      "react/no-did-update-set-state": "off",
+      "class-methods-use-this": "off"
     }
 }
