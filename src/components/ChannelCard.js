@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/Button';
 
 export const createMessage = (userId, channelId, content = '', nextAction = null) => {
   fetch('http://localhost:3004/messages/', {
@@ -51,19 +52,18 @@ class ChannelCard extends React.Component {
       <div>
         <p>{record.name}</p>
         {!noAdd ? (
-          <button
-            type="button"
+          <Button
+            variant="primary"
             onClick={() => this.handleClick(record)}
           >
             Add
-          </button>
+          </Button>
         ) : (
-          <button
-            type="button"
+          <Button
             onClick={() => setChannelSelected(record)}
           >
             Select
-          </button>
+          </Button>
         )}
       </div>
     );

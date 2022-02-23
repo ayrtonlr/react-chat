@@ -19,7 +19,9 @@
       "firstName": "Ayrton",
       "lastName": "Lima",
       "email": "ayrton@abc.com",
-      "channels": []
+      "channels": [
+        3
+      ]
     },
     {
       "id": 2,
@@ -130,6 +132,14 @@
       "createdAt": "2022-01-03T13:39:03.969Z",
       "content": "This is sad",
       "isFirst": false
+    },
+    {
+      "userId": 1,
+      "channelId": 3,
+      "createdAt": "2022-02-23T20:15:34.850Z",
+      "content": "",
+      "isFirst": true,
+      "id": 12
     }
   ]
 }

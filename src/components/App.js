@@ -1,5 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import ChannelList from './ChannelList';
 import Channel from './Channel';
 
@@ -34,18 +39,24 @@ class App extends React.Component {
     return isLoading ? (
       <h1>Loading</h1>
     ) : (
-      <>
-        <ChannelList
-          user={user}
-          setChannelSelected={this.setChannelSelected}
-        />
-        {channelSelected.id && (
-          <Channel
-            channel={channelSelected}
-            userId={userId}
-          />
-        )}
-      </>
+      <Container>
+        <Row>
+          <Col>
+            <ChannelList
+              user={user}
+              setChannelSelected={this.setChannelSelected}
+            />
+          </Col>
+          <Col>
+            {channelSelected.id && (
+            <Channel
+              channel={channelSelected}
+              userId={userId}
+            />
+            )}
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
