@@ -34,7 +34,7 @@ class App extends React.Component {
     const { userId } = this.props;
     const { user, channelSelected } = this.state;
 
-    return (
+    return user.id ? (
       <Container>
         <Row>
           <Col>
@@ -53,7 +53,7 @@ class App extends React.Component {
           </Col>
         </Row>
       </Container>
-    );
+    ) : null;
   }
 }
 
