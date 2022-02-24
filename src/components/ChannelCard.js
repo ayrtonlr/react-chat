@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 export const createMessage = (userId, channelId, content = '', nextAction = null) => {
   fetch('http://localhost:3004/messages/', {
@@ -29,7 +30,6 @@ class ChannelCard extends React.Component {
       userId, record, changeState, userChannelIds,
     } = this.props;
     const channels = [...userChannelIds, item.id];
-    changeState({ isLoading: true });
     fetch(`http://localhost:3004/users/${userId}/`, {
       method: 'PATCH',
       body: JSON.stringify({ channels: [...new Set(channels)] }),
@@ -41,31 +41,24 @@ class ChannelCard extends React.Component {
       .then((data) => {
         changeState({ userChannelIds: data.channels || [] });
         createMessage(data.id, record.id);
-      })
-      .finally(() => changeState({ isLoading: false }));
+      });
   };
 
   render() {
     const { record, noAdd, setChannelSelected } = this.props;
 
     return (
-      <div>
-        <p>{record.name}</p>
-        {!noAdd ? (
+      <Card className="m-3">
+        <Card.Body className="d-flex justify-content-between align-items-center">
+          <Card.Title className="m-0">{record.name}</Card.Title>
           <Button
             variant="primary"
-            onClick={() => this.handleClick(record)}
+            onClick={() => (!noAdd ? this.handleClick(record) : setChannelSelected(record))}
           >
-            Add
+            {!noAdd ? 'Join' : 'Select'}
           </Button>
-        ) : (
-          <Button
-            onClick={() => setChannelSelected(record)}
-          >
-            Select
-          </Button>
-        )}
-      </div>
+        </Card.Body>
+      </Card>
     );
   }
 }

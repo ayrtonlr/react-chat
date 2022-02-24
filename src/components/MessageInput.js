@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import { createMessage } from './ChannelCard';
 
 class MessageInput extends React.Component {
@@ -7,7 +9,6 @@ class MessageInput extends React.Component {
     super(props);
     this.state = {
       value: '',
-      isLoading: false,
     };
   }
 
@@ -23,6 +24,7 @@ class MessageInput extends React.Component {
   };
 
   updateMessage = (messageId, value) => {
+    const { getMessages } = this.props;
     fetch(`http://localhost:3004/messages/${messageId}/`, {
       method: 'PATCH',
       body: JSON.stringify({ content: value }),
@@ -31,41 +33,54 @@ class MessageInput extends React.Component {
       },
     })
       .then(() => {
-        this.handleFinishSubmit();
+        getMessages();
       });
   };
 
   handleSubmit = (event) => {
     const { value } = this.state;
     const {
-      userId, channelId, currentValue, messageId,
+      userId,
+      channelId,
+      currentValue,
+      messageId,
+      getMessages,
     } = this.props;
-    this.setState({ value: '', isLoading: true });
     if (currentValue && messageId) {
       this.updateMessage(messageId, value);
     } else {
-      createMessage(userId, channelId, value, this.handleFinishSubmit);
+      createMessage(userId, channelId, value, getMessages);
     }
+    this.setState({ value: '' });
     event.preventDefault();
   };
 
-  handleFinishSubmit = () => {
-    const { getMessages } = this.props;
-    getMessages();
-    this.setState({ isLoading: false });
-  };
-
   render() {
-    const { value, isLoading } = this.state;
-    return isLoading ? (
-      <h1>Loading</h1>
-    ) : (
-      <form onSubmit={this.handleSubmit}>
-        <label htmlFor="message">
-          <input id="message" type="text" value={value} onChange={this.handleChange} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+    const { value } = this.state;
+    return (
+      <Form
+        onSubmit={this.handleSubmit}
+        className="d-flex justify-content-between align-items-center"
+      >
+        <Form.Group
+          controlId="formMessage"
+          className="m-1 w-100"
+        >
+          <Form.Control
+            type="text"
+            placeholder="Message..."
+            value={value}
+            onChange={this.handleChange}
+          />
+        </Form.Group>
+        <Button
+          className="m-1"
+          variant="primary"
+          type="submit"
+        >
+          Send
+        </Button>
+      </Form>
     );
   }
 }

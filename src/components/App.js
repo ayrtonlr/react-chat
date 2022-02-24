@@ -13,7 +13,6 @@ class App extends React.Component {
     super(props);
     this.state = {
       user: {},
-      isLoading: true,
       channelSelected: {},
     };
   }
@@ -24,8 +23,7 @@ class App extends React.Component {
       .then((res) => res.json())
       .then((data) => {
         this.setState({ user: data });
-      })
-      .finally(() => this.setState({ isLoading: false }));
+      });
   }
 
   setChannelSelected = (obj) => {
@@ -34,11 +32,9 @@ class App extends React.Component {
 
   render() {
     const { userId } = this.props;
-    const { user, isLoading, channelSelected } = this.state;
+    const { user, channelSelected } = this.state;
 
-    return isLoading ? (
-      <h1>Loading</h1>
-    ) : (
+    return (
       <Container>
         <Row>
           <Col>

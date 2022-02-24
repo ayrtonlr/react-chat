@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import MessageInput from './MessageInput';
 
 class MessageCard extends React.Component {
@@ -31,50 +33,59 @@ class MessageCard extends React.Component {
       record, userId, channelId,
     } = this.props;
     const { isEditing } = this.state;
+    const createdAt = new Date(record.createdAt).toLocaleString();
 
     if (record.isFirst) {
       return (
-        <div>
-          <p>{new Date(record.createdAt).toLocaleString()}</p>
-          <p>{`${record.userFullName} entrou no grupo`}</p>
+        <div className="text-center">
+          <p className="m-3">{`${record.userFullName} joined the group - ${createdAt}`}</p>
         </div>
       );
     }
 
-    if (isEditing) {
-      return (
-        <MessageInput
-          getMessages={this.finishEditing}
-          channelId={channelId}
-          userId={userId}
-          currentValue={record.content}
-          messageId={record.id}
-        />
-      );
-    }
+    const isOwnUser = userId === record.messageUserId;
+    const alignItems = isOwnUser ? 'align-items-end' : 'align-items-start';
 
-    return userId === record.messageUserId ? (
-      <div>
-        <p>{new Date(record.createdAt).toLocaleString()}</p>
-        <p>{record.content}</p>
-        <button
-          type="button"
-          onClick={() => this.handleDelete(record.id)}
-        >
-          Delete
-        </button>
-        <button
-          type="button"
-          onClick={() => this.setState({ isEditing: true })}
-        >
-          Edit
-        </button>
-      </div>
-    ) : (
-      <div>
-        <p>{new Date(record.createdAt).toLocaleString()}</p>
-        <p>{record.content}</p>
-      </div>
+    return (
+      <Card className="m-1">
+        <Card.Body className={`d-flex flex-column ${alignItems}`}>
+          <Card.Text>
+            {`${record.userFullName} - ${new Date(record.createdAt).toLocaleString()}`}
+          </Card.Text>
+          {isEditing ? (
+            <MessageInput
+              getMessages={this.finishEditing}
+              channelId={channelId}
+              userId={userId}
+              currentValue={record.content}
+              messageId={record.id}
+            />
+          ) : (
+            <>
+              <Card.Title className="m-0">{record.content}</Card.Title>
+              {isOwnUser && (
+              <div className="mt-2">
+                <Button
+                  className="m-1"
+                  type="button"
+                  onClick={() => this.setState({ isEditing: true })}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  className="m-1"
+                  type="button"
+                  onClick={() => this.handleDelete(record.id)}
+                >
+                  Delete
+                </Button>
+              </div>
+              )}
+            </>
+          )}
+        </Card.Body>
+      </Card>
     );
   }
 }

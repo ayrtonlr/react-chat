@@ -8,7 +8,6 @@ class ChannelList extends React.Component {
     this.state = {
       allChannels: [],
       userChannelIds: [],
-      isLoading: true,
     };
   }
 
@@ -19,8 +18,7 @@ class ChannelList extends React.Component {
       .then((response) => response.json())
       .then((data) => {
         this.setState({ allChannels: data });
-      })
-      .finally(() => this.setState({ isLoading: false }));
+      });
   }
 
   changeState = (obj) => {
@@ -29,7 +27,7 @@ class ChannelList extends React.Component {
 
   render() {
     const { user, setChannelSelected } = this.props;
-    const { allChannels, userChannelIds, isLoading } = this.state;
+    const { allChannels, userChannelIds } = this.state;
 
     const remainingChannels = allChannels.filter(
       (item) => !userChannelIds.includes(item.id),
@@ -38,11 +36,9 @@ class ChannelList extends React.Component {
       (item) => userChannelIds.includes(item.id),
     );
 
-    return isLoading ? (
-      <h1>Loading</h1>
-    ) : (
-      <>
-        <h1>All Channels</h1>
+    return (
+      <div>
+        <h1 className="text-center">All Channels</h1>
         {remainingChannels.map((item) => (
           <ChannelCard
             key={item.id}
@@ -53,7 +49,7 @@ class ChannelList extends React.Component {
             setChannelSelected={setChannelSelected}
           />
         ))}
-        <h1>My Channels</h1>
+        <h1 className="text-center">My Channels</h1>
         {userChannels.map((item) => (
           <ChannelCard
             key={item.id}
@@ -65,7 +61,7 @@ class ChannelList extends React.Component {
             noAdd
           />
         ))}
-      </>
+      </div>
     );
   }
 }
