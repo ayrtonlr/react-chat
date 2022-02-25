@@ -1,86 +1,74 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+
 import Card from 'react-bootstrap/Card';
-import MessageCard from './MessageCard';
+
 import MessageInput from './MessageInput';
 
-class Channel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      channelMessages: [],
-    };
-  }
+export default function Channel(props) {
+  const {
+    messages, channel, userId, setNewMessage,
+  } = props;
 
-  componentDidMount() {
-    this.getMessages();
-  }
+  return (
+    <div>
+      <h1 className="text-center">{channel.name}</h1>
+      <Card className="m-3">
+        {messages.map((message) => {
+          const createdAt = new Date(message.createdAt).toLocaleString();
+          const userName = message.user && message.user.name;
+          const isOwnUser = message.user && message.user.id === userId;
+          const alignItems = isOwnUser ? 'align-items-end' : 'align-items-start';
 
-  componentDidUpdate(prevProps) {
-    const { channel } = this.props;
-    const { channel: prevChannel } = prevProps;
-    if (prevChannel.id !== channel.id) {
-      this.getMessages();
-    }
-  }
-
-  getMessages = () => {
-    const { channel } = this.props;
-    fetch(`http://localhost:3004/messages/?channelId=${channel.id}&_expand=user&_expand=channel&_sort=createdAt`)
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({ channelMessages: data });
-      });
-  };
-
-  render() {
-    const { channel, userId } = this.props;
-    const { channelMessages } = this.state;
-
-    return (
-      <div>
-        <h1 className="text-center">{channel.name}</h1>
-        <Card className="m-3">
-          {channelMessages.map((message) => {
-            const messageObj = {
-              id: message.id,
-              content: message.content,
-              createdAt: message.createdAt,
-              isFirst: message.isFirst,
-              messageUserId: message.userId,
-              userFullName: `${message.user.firstName} ${message.user.lastName}`,
-            };
-            return (
-              <MessageCard
-                key={message.id}
-                record={messageObj}
-                userId={userId}
-                channelId={channel.id}
-                getMessages={this.getMessages}
-              />
-            );
-          })}
-          <MessageInput
-            getMessages={this.getMessages}
-            channelId={channel.id}
-            userId={userId}
-          />
-        </Card>
-      </div>
-    );
-  }
+          return message.isFirst ? (
+            <div key={message.id} className="text-center">
+              <p className="m-3">{`${userName} joined the group - ${createdAt}`}</p>
+            </div>
+          ) : (
+            <Card key={message.id} className="m-1">
+              <Card.Body className={`d-flex flex-column ${alignItems}`}>
+                <Card.Text>
+                  {`${userName} - ${createdAt}`}
+                </Card.Text>
+                <Card.Title className="m-0">{message.content}</Card.Title>
+              </Card.Body>
+            </Card>
+          );
+        })}
+        <MessageInput
+          userId={userId}
+          channelId={channel.id}
+          setNewMessage={setNewMessage}
+        />
+      </Card>
+    </div>
+  );
 }
 
 Channel.propTypes = {
+  messages: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    channelId: PropTypes.number,
+    userId: PropTypes.number,
+    isFirst: PropTypes.bool,
+    content: PropTypes.string,
+    createdAt: PropTypes.string,
+    user: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      channels: PropTypes.arrayOf(PropTypes.number),
+    }),
+  })),
   channel: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
   }),
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.number,
+  setNewMessage: PropTypes.func,
 };
 
 Channel.defaultProps = {
   channel: {},
+  messages: [],
+  userId: 0,
+  setNewMessage: () => {},
 };
-
-export default Channel;

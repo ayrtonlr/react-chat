@@ -1,85 +1,65 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import ChannelCard from './ChannelCard';
 
-class ChannelList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      allChannels: [],
-      userChannelIds: [],
-    };
-  }
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
-  componentDidMount() {
-    const { user } = this.props;
-    this.setState({ userChannelIds: user.channels || [] });
-    fetch('http://localhost:3004/channels/')
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({ allChannels: data });
-      });
-  }
+export default function ChannelList(props) {
+  const {
+    channels,
+    userChannels,
+    selectedChannel,
+    handleChannelJoin,
+    handleChannelSelect,
+  } = props;
 
-  changeState = (obj) => {
-    this.setState(obj);
-  };
-
-  render() {
-    const { user, setChannelSelected } = this.props;
-    const { allChannels, userChannelIds } = this.state;
-
-    const remainingChannels = allChannels.filter(
-      (item) => !userChannelIds.includes(item.id),
-    );
-    const userChannels = allChannels.filter(
-      (item) => userChannelIds.includes(item.id),
-    );
-
-    return (
-      <div>
-        <h1 className="text-center">All Channels</h1>
-        {remainingChannels.map((item) => (
-          <ChannelCard
-            key={item.id}
-            userId={user.id}
-            record={item}
-            changeState={this.changeState}
-            userChannelIds={userChannelIds}
-            setChannelSelected={setChannelSelected}
-          />
-        ))}
-        <h1 className="text-center">My Channels</h1>
-        {userChannels.map((item) => (
-          <ChannelCard
-            key={item.id}
-            userId={user.id}
-            record={item}
-            changeState={this.changeState}
-            userChannelIds={userChannelIds}
-            setChannelSelected={setChannelSelected}
-            noAdd
-          />
-        ))}
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1 className="text-center">Channels</h1>
+      {channels.map((record) => (
+        <Card key={record.id} className="m-3">
+          <Card.Body className="d-flex justify-content-between align-items-center">
+            <Card.Title className="m-0">{record.name}</Card.Title>
+            {userChannels.includes(record.id) ? (
+              <Button
+                variant="success"
+                onClick={() => handleChannelSelect(record.id)}
+                style={selectedChannel.id === record.id ? { display: 'none' } : {}}
+              >
+                Select
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => handleChannelJoin(record.id)}
+              >
+                Join
+              </Button>
+            )}
+          </Card.Body>
+        </Card>
+      ))}
+    </div>
+  );
 }
 
 ChannelList.propTypes = {
-  user: PropTypes.shape({
+  channels: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
-    first_name: PropTypes.string,
-    last_name: PropTypes.string,
-    email: PropTypes.string,
-    channels: PropTypes.arrayOf(PropTypes.number),
+    name: PropTypes.string,
+  })),
+  userChannels: PropTypes.arrayOf(PropTypes.number),
+  selectedChannel: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
   }),
-  setChannelSelected: PropTypes.func,
+  handleChannelJoin: PropTypes.func,
+  handleChannelSelect: PropTypes.func,
 };
 
 ChannelList.defaultProps = {
-  user: { channels: [] },
-  setChannelSelected: () => {},
+  channels: [],
+  userChannels: [],
+  selectedChannel: {},
+  handleChannelJoin: () => {},
+  handleChannelSelect: () => {},
 };
-
-export default ChannelList;

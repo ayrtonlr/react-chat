@@ -16,10 +16,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "api": "json-server src/api/db.json -p 3004",
+    "api": "json-server src/api/db.json -p 3004 --delay 1000",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --coverage --watch",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
